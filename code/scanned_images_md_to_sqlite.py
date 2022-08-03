@@ -9,7 +9,9 @@ batch of images from the Brendan Mulvany archive.
 
 # Get some config data about the location of the myslite db
 import configparser
+import argparse
 
+# Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
 config.read("config.ini")
 db_path = config["sqlite3"]["db_path"]
