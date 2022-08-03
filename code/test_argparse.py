@@ -36,3 +36,19 @@ for line in os.listdir(input_path):
     print(line)
 
 print("mischeif managed! again")
+
+
+###### - example usaage for image hasing function
+# default_path = "../images/test_images/JPEG image 6.jpeg"
+# parser = argparse.ArgumentParser(description="Generate hashses of images")
+# parser.add_argument(
+#     "image_path", type=str, help="path to the image", nargs="?", default=default_path
+# )
+# parser.add_argument(
+#     "--image-hash", type=bool, default=False, help="generate an image hash using PIL"
+# )
+
+# # parse arguments
+# args = parser.parse_args()  # args=None if sys.argv[1:] else ["--help"])
+# image_path = args.image_path
+# image_hash = args.image_path
