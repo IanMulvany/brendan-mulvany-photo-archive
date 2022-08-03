@@ -9,7 +9,7 @@ Looking at hashing functions, had a bit of a problem working with PIL, ended up 
 
 ## 2022-04-28 
 
-Experimented with a few ways to export photos:
+Experimented with a few ways to export photos from an OSX image album. 
 
 osxphotos export --album test-osx-export --exiftool  .
 osxphotos export --album test-osx-export . --sidecar XMP
