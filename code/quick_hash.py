@@ -4,33 +4,20 @@ a quick function to return the hash of an image
 
 run as follows:
 $./quick_hash.py <image_path>
-"""
 
+run a quick test as follows: 
+$./quick_hash.py 
+"""
 import hashlib
 import argparse
 import sys
 from os import path
-
 from PIL import Image
 from numpy import imag
 import imagehash
 
-default_path = "../images/test_images/JPEG image 6.jpeg"
-parser = argparse.ArgumentParser(description="Generate hashses of images")
-parser.add_argument(
-    "image_path", type=str, help="path to the image", nargs="?", default=default_path
-)
-parser.add_argument(
-    "--image-hash", type=bool, default=False, help="generate an image hash using PIL"
-)
 
-# parse arguments
-args = parser.parse_args()  # args=None if sys.argv[1:] else ["--help"])
-image_path = args.image_path
-image_hash = args.image_path
-
-
-def get_hash_of_image(image_path):
+def get_md5_hash(image_path):
     "gets the hash of an image"
 
     if path.isfile(image_path) is False:
@@ -45,29 +32,37 @@ def get_hash_of_image(image_path):
     return img_hash
 
 
-def print_hash_variants(image_path):
-    "prints the hash variants"
+def get_perceptual_hash(image_path):
+    """
+    prints the hash variants
+
+    based on https://towardsdatascience.com/detection-of-duplicate-images-using-image-hash-functions-4d9c53f04a75
+    we are going to impliment phash to find visually simillar images
+    """
+
+    if path.isfile(image_path) is False:
+        print("error, no such file exists")
+        sys.exit()
 
     img = Image.open(image_path)
-
     img_hash = imagehash.phash(img)
-    average_hash = imagehash.average_hash(Image.open(image_path))
-    dct_hash = imagehash.dhash(Image.open(image_path))
-    classic_hash = get_hash_of_image(image_path)
-    print(img_hash)
-    print(average_hash)
-    print(dct_hash)
-    print(classic_hash)
+    return img_hash
 
 
 # create the main function to run the program
 def main():
     "main function"
 
-    if args.image_path:
-        print_hash_variants(image_path)
-        if image_path == default_path:
-            print("test path used, check function with --help")
+    default_path = "../images/test_images/JPEG image 6.jpeg"
+
+    if path.isfile(default_path) is False:
+        print("error, no such file exists")
+        sys.exit()
+
+    md5_hash = get_md5_hash(default_path)
+    print("md5 hash: " + md5_hash)
+    perceptual_hash = get_perceptual_hash(default_path)
+    print("perceptual hash: " + str(perceptual_hash))
 
 
 if __name__ == "__main__":
