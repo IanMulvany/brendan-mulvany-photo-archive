@@ -28,8 +28,17 @@ def get_batch_note():
     return batch_note
 
 
-batch_number = get_batch_number()
-batch_year = get_batch_year()
-batch_note = get_batch_note()
+def get_batch_info():
+    batch_number = get_batch_number()
+    batch_year = get_batch_year()
+    batch_note = get_batch_note()
+    return batch_number, batch_year, batch_note
 
-print(batch_number, batch_year, batch_note)
+
+def main():
+    batch_number, batch_year, batch_note = get_batch_info()
+    print(batch_number, batch_year, batch_note)
+
+
+if __name__ == "__main__":
+    main()
