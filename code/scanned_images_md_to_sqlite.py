@@ -12,6 +12,9 @@ import argparse
 import sys
 from os import path
 
+#
+from get_batch_info import get_batch_info
+
 # Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -30,8 +33,10 @@ parser.add_argument(
 )
 args = parser.parse_args()
 image_dir_path = args.image_dir_path
-print("images you are looking at are in the directory: " + image_dir_path)
-
 if path.isdir(image_dir_path) is False:
     print("error, no such directory exists: " + image_dir_path)
     sys.exit()
+
+# get info about the batch run.
+batch_number, batch_year, batch_note = get_batch_info()
+print(batch_number, batch_year, batch_note)
