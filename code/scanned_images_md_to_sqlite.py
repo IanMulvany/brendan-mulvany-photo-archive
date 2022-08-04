@@ -9,6 +9,8 @@ batch of images from the Brendan Mulvany archive.
 
 import configparser
 import argparse
+import sys
+from os import path
 
 # Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
@@ -29,3 +31,7 @@ parser.add_argument(
 args = parser.parse_args()
 image_dir_path = args.image_dir_path
 print("images you are looking at are in the directory: " + image_dir_path)
+
+if path.isdir(image_dir_path) is False:
+    print("error, no such directory exists: " + image_dir_path)
+    sys.exit()
