@@ -1,4 +1,4 @@
-#!/Users/devian/opt/anaconda3/bin/python
+#!/Users/devian/opt/anaconda3/envs/bm_archive/bin/python
 """
 a quick function to return the hash of an image
 
@@ -7,13 +7,16 @@ $./quick_hash.py <image_path>
 
 run a quick test as follows: 
 $./quick_hash.py 
+
+---
+getting some errors due to Numpy versions, but they are not really needed, see
+https://stackoverflow.com/questions/73072257/resolve-warning-a-numpy-version-1-16-5-and-1-23-0-is-required-for-this-versi
+
 """
 import hashlib
-import argparse
 import sys
 from os import path
 from PIL import Image
-from numpy import imag
 import imagehash
 
 
@@ -47,6 +50,12 @@ def get_perceptual_hash(image_path):
     img = Image.open(image_path)
     img_hash = imagehash.phash(img)
     return img_hash
+
+
+def get_image_hashes(impage_path):
+    md5_hash = get_md5_hash(impage_path)
+    phash = get_perceptual_hash(impage_path)
+    return md5_hash, phash
 
 
 # create the main function to run the program

@@ -1,3 +1,4 @@
+#!/Users/devian/opt/anaconda3/envs/bm_archive/bin/python
 """
 Given a path to a directory of images:
 
@@ -17,6 +18,7 @@ from os.path import join
 #
 from get_batch_info import get_batch_info
 from get_image_md import get_image_md
+from quick_hash import get_image_hashes
 
 # Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
@@ -57,7 +59,8 @@ image_paths = get_image_paths(image_dir_path)
 # get the md for each image in image paths
 for image_path in image_paths:
     image_date, image_name, image_size, image_absolute_path = get_image_md(image_path)
-    print(image_date, image_name, image_size, image_absolute_path)
+    md5_hash, pash = get_image_hashes(image_path)
+    print(image_date, image_name, image_size, image_absolute_path, md5_hash, pash)
 
 
 # get info about the batch run.
