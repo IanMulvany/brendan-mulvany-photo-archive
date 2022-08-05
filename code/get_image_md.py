@@ -70,6 +70,21 @@ def get_absolute_path(image_path):
     return os.path.abspath(image_path)
 
 
+def get_image_md(image_path):
+    "get some metadata about the image"
+
+    if path.isfile(image_path) is False:
+        print("error, no such file exists")
+        sys.exit()
+
+    image_date = get_image_date(image_path)
+    image_name = get_image_name(image_path)
+    image_size = get_image_size(image_path)
+    image_absolute_path = get_absolute_path(image_path)
+
+    return image_date, image_name, image_size, image_absolute_path
+
+
 # create the main function to run the program
 def main():
     "main function"
