@@ -54,6 +54,11 @@ def get_image_paths(image_dir_path):
 
 image_paths = get_image_paths(image_dir_path)
 
+# get the md for each image in image paths
+for image_path in image_paths:
+    image_date, image_name, image_size, image_absolute_path = get_image_md(image_path)
+    print(image_date, image_name, image_size, image_absolute_path)
+
 
 # get info about the batch run.
 batch_number, batch_year, batch_note = get_batch_info()
