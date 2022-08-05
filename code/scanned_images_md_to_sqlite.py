@@ -16,6 +16,7 @@ from os.path import join
 
 #
 from get_batch_info import get_batch_info
+from get_image_md import get_image_md
 
 # Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
@@ -52,7 +53,6 @@ def get_image_paths(image_dir_path):
 
 
 image_paths = get_image_paths(image_dir_path)
-print(image_paths)
 
 
 # get info about the batch run.
