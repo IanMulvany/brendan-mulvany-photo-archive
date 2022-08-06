@@ -56,13 +56,15 @@ def get_image_paths(image_dir_path):
 
 image_paths = get_image_paths(image_dir_path)
 
+
 # get the md for each image in image paths
+images_md = []
 for image_path in image_paths:
     image_date, image_name, image_size, image_absolute_path = get_image_md(image_path)
-    md5_hash, pash = get_image_hashes(image_path)
-    print(image_date, image_name, image_size, image_absolute_path, md5_hash, pash)
-
+    md5_hash, img_pash = get_image_hashes(image_path)
+    # print(img_pash)
+    row = [image_date, image_name, image_size, image_absolute_path, md5_hash, str(img_pash)]
+    images_md.append(row)
 
 # get info about the batch run.
 batch_number, batch_year, batch_note = get_batch_info()
-print(batch_number, batch_year, batch_note)
