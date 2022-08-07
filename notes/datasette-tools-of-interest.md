@@ -34,6 +34,10 @@ utils for managing sqlite databases
 in particular upserting data - https://sqlite-utils.datasette.io/en/stable/cli.html#upserting-data
 
 
+Media / images / in sqlite / datasette /
+https://simonwillison.net/2020/Jul/30/fun-binary-data-and-sqlite/ 
+https://github.com/simonw/datasette-render-images 
+
 
 
 
