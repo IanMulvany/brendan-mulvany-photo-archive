@@ -14,6 +14,7 @@ import sys
 from os import path
 import glob as glob
 from os.path import join
+import sqlite3 
 
 #
 from get_batch_info import get_batch_info
@@ -58,13 +59,53 @@ image_paths = get_image_paths(image_dir_path)
 
 
 # get the md for each image in image paths
+#TODO: configure db filed names from ini file rather than in code
 images_md = []
 for image_path in image_paths:
     image_date, image_name, image_size, image_absolute_path = get_image_md(image_path)
-    md5_hash, img_pash = get_image_hashes(image_path)
-    # print(img_pash)
-    row = [image_date, image_name, image_size, image_absolute_path, md5_hash, str(img_pash)]
+    image_hash, near_hash = get_image_hashes(image_path)
+    # set row to the order of items in the insert query below
+    row = [image_date, image_absolute_path, image_name, image_size, image_hash, str(near_hash)]
     images_md.append(row)
 
 # get info about the batch run.
 batch_number, batch_year, batch_note = get_batch_info()
+
+for row in images_md:
+    row.extend([batch_year, batch_number, batch_note]) # add batch info to row 
+
+
+# insert the following data into the Images table of the Sqlite database
+# capture_date
+# impage_path
+# image_name 
+# image_size
+# md5_hash 
+# near_hash (pash) 
+# batch_year 
+# batch_number 
+# batch_note 
+
+print(db_path)
+def insertMultipleRecords(db_path, recordList):
+    try:
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        
+        print("Connected to SQLite")
+
+        sqlite_insert_query = """INSERT INTO Images 
+            (capture_date, image_path, image_name, image_size, image_hash, near_hash, bm_batch_year, bm_batch_number, bm_batch_note) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+            
+        # cur.execute("INSERT INTO Images VALUES (9, '2019-01-01', 'image_path', 'image_name', 100, 'image_hash', 'near_hash', 'bm_batch_year', 1, 'bm_batch_note')")
+        cur.executemany(sqlite_insert_query, recordList) 
+        conn.commit()
+        conn.close()
+
+    except sqlite3.Error as error:
+        print("Failed to insert record into sqlite table", error)
+
+
+insertMultipleRecords(db_path, images_md)
+print("done") 
