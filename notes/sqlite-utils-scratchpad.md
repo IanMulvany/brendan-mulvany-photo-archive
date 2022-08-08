@@ -34,6 +34,19 @@ sqlite-utils insert-files bm_image_archive_test_refactor.db original_images ../i
 (bm_archive) devian@JBHM-LT25194 code % sqlite-utils insert-files bm_image_archive_test_refactor.db original_images_blobs ../images/test_images
 ``` 
 
+This should work:
+
+sqlite-utils insert-files files.db images *.gif -c blob:content -c hashed_md5:md5
+
+Produces this schema:
+
+CREATE TABLE [images] (
+   [blob] BLOB,
+   [hashed_md5] TEXT
+);
+
+See here for more details https://sqlite-utils.datasette.io/en/stable/cli.html#cli-insert-files
+
 
 
 
