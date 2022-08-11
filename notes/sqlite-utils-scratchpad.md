@@ -47,6 +47,12 @@ CREATE TABLE [images] (
 
 See here for more details https://sqlite-utils.datasette.io/en/stable/cli.html#cli-insert-files
 
+Try this command:
+
+```bash
+sqlite-utils insert-files bm_image_archive_test_refactor.db images_blob_and_md ../images/osx-export-1  -c blob:content -c hashed_md5:md5 -name -c ctime_iso:created_time -c size 
+```
+
 
 
 
@@ -63,3 +69,35 @@ select
 from
   Images
   Join bm_batch_info on bm_batch_number 
+
+
+--- --------------------------------
+Creating multiple tables with keys 
+
+from : https://stackoverflow.com/questions/62625913/inserting-with-foreign-key-in-sqlite3-for-python 
+
+CREATE TABLE "team" (
+    "id"    INTEGER UNIQUE,
+    "opponent_name" TEXT,
+    "rank_when played"  INTEGER,
+    "date_added"    TEXT,
+    PRIMARY KEY("id" AUTOINCREMENT)
+);
+
+CREATE TABLE "game" (
+    "id"    INTEGER,
+    "opponent_id"   INTEGER,
+    "goals_for" INTEGER,
+    "goals_against" INTEGER,
+    "date_added"    TEXT,
+    PRIMARY KEY("id" AUTOINCREMENT),
+    FOREIGN KEY("opponent_id") REFERENCES "team"("id")
+);
+
+
+---
+info on creating indicies in SQLite database
+
+https://www.sqlitetutorial.net/sqlite-index/
+see also https://sqlite-utils.datasette.io/en/stable/cli.html#creating-indexes 
+
