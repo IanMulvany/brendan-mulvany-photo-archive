@@ -19,7 +19,7 @@ import sqlite3
 #
 from get_batch_info import get_batch_info
 from get_image_md import get_image_md
-from quick_hash import get_image_hashes
+from quick_hash import get_perceptual_hash 
 
 # Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
@@ -62,8 +62,8 @@ image_paths = get_image_paths(image_dir_path)
 #TODO: configure db filed names from ini file rather than in code
 images_md = []
 for image_path in image_paths:
-    image_date, image_name, image_size, image_absolute_path = get_image_md(image_path)
-    image_hash, near_hash = get_image_hashes(image_path)
+    image_name, image_date , image_absolute_path = get_image_md(image_path)
+    pash = get_perceptual_hash(image_path)
     # set row to the order of items in the insert query below
     row = [image_date, image_absolute_path, image_name, image_size, image_hash, str(near_hash)]
     images_md.append(row)
@@ -86,25 +86,25 @@ for row in images_md:
 # batch_number 
 # batch_note 
 
-print(db_path)
-def insertMultipleRecords(db_path, recordList):
-    try:
-        conn = sqlite3.connect(db_path)
-        cur = conn.cursor()
+# print(db_path)
+# def insertMultipleRecords(db_path, recordList):
+#     try:
+#         conn = sqlite3.connect(db_path)
+#         cur = conn.cursor()
         
-        print("Connected to SQLite")
+#         print("Connected to SQLite")
 
-        sqlite_insert_query = """INSERT INTO Images 
-            (capture_date, image_path, image_name, image_size, image_hash, near_hash, bm_batch_year, bm_batch_number, bm_batch_note) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+#         sqlite_insert_query = """INSERT INTO Images 
+#             (capture_date, image_path, image_name, image_size, image_hash, near_hash, bm_batch_year, bm_batch_number, bm_batch_note) 
+#             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
             
-        # cur.execute("INSERT INTO Images VALUES (9, '2019-01-01', 'image_path', 'image_name', 100, 'image_hash', 'near_hash', 'bm_batch_year', 1, 'bm_batch_note')")
-        cur.executemany(sqlite_insert_query, recordList) 
-        conn.commit()
-        conn.close()
+#         # cur.execute("INSERT INTO Images VALUES (9, '2019-01-01', 'image_path', 'image_name', 100, 'image_hash', 'near_hash', 'bm_batch_year', 1, 'bm_batch_note')")
+#         cur.executemany(sqlite_insert_query, recordList) 
+#         conn.commit()
+#         conn.close()
 
-    except sqlite3.Error as error:
-        print("Failed to insert record into sqlite table", error)
+#     except sqlite3.Error as error:
+#         print("Failed to insert record into sqlite table", error)
 
 
 insertMultipleRecords(db_path, images_md)

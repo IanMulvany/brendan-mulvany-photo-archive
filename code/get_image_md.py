@@ -48,17 +48,6 @@ def get_image_name(image_path):
     return image_path.split("/")[-1]
 
 
-# given a path to an impge, get the file size
-def get_image_size(image_path):
-
-    if path.isfile(image_path) is False:
-        print("error, no such file exists")
-        sys.exit()
-
-    file_stats = os.stat(image_path)
-    file_size = file_stats.st_size
-    return file_size
-
 
 # given the relative path of an image, return the absolute path
 def get_absolute_path(image_path):
@@ -77,12 +66,12 @@ def get_image_md(image_path):
         print("error, no such file exists")
         sys.exit()
 
-    image_date = get_image_date(image_path)
+    
     image_name = get_image_name(image_path)
-    image_size = get_image_size(image_path)
+    image_date = get_image_date(image_path)
     image_absolute_path = get_absolute_path(image_path)
 
-    return image_date, image_name, image_size, image_absolute_path
+    return image_name, image_date , image_absolute_path
 
 
 # create the main function to run the program
