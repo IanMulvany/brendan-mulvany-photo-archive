@@ -13,3 +13,9 @@ https://m.youtube.com/watch?v=sjpSGnM0F8M
 
 https://www.captureone.com/en/explore-features
 There is an express version of this, which looks like it might be free 
+
+
+# make http requests via SQLite 
+https://observablehq.com/@asg017/introducing-sqlite-http 
+
+
