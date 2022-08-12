@@ -79,12 +79,85 @@ for image_path in image_paths:
     images_md.append(row)
 
 # get info about the batch run.
-batch_number, batch_year, batch_note = get_batch_yaml(image_dir_path)
+batch_year, batch_number, batch_note = get_batch_yaml(image_dir_path)
+
 
 for row in images_md:
     row.extend([batch_year, batch_number, batch_note]) # add batch info to row 
-
 print(images_md)
+
+
+print(db_path)
+def insertBatchRecord(db_path, batch_info):
+    try:
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        
+        print("Connected to SQLite")
+        print(batch_info)
+
+        sqlite_insert_query = """INSERT INTO batch_info 
+            (year, name, batch_number)
+            VALUES (?, ?, ?)"""
+            
+        # cur.execute("INSERT INTO Images VALUES (9, '2019-01-01', 'image_path', 'image_name', 100, 'image_hash', 'near_hash', 'bm_batch_year', 1, 'bm_batch_note')")
+        cur.execute(sqlite_insert_query, batch_info) 
+        conn.commit()
+        conn.close()
+
+    except sqlite3.Error as error:
+        print("Failed to insert record into sqlite table", error)
+
+
+
+
+    # step text \
+    # step_date text \
+    # ingest_date text \
+    # abs_path text \
+    # rel_path text \
+    # pash text \
+    # cropped_from text \
+    # inverted_from text \
+    # edited_from text \
+    # --fk batch_id batch_info batch_number \
+    # --fk image images name
+
+
+def insertStepRecord(db_path, step_info):
+    try:
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        
+        print("Connected to SQLite")
+        print(step_info)
+
+        sqlite_insert_query = """INSERT INTO archival_steps 
+            (name, step, abs_path, pash, batch_id, image)
+            VALUES (?, ?, ?, ?, ?, ?)"""
+            
+        cur.execute(sqlite_insert_query, step_info) 
+        conn.commit()
+        conn.close()
+
+    except sqlite3.Error as error:
+        print("Failed to insert record into sqlite table", error)
+
+# batch_info = {"year":batch_year, "name":batch_note, "batch_number":batch_number}
+batch_info = [batch_year, batch_note, batch_number]
+insertBatchRecord(db_path, batch_info)
+
+for row in images_md:
+    name = row[2]
+    step = process_step 
+    abs_path = row[1]
+    pash = row[3] 
+    image_id = name 
+    batch_id = batch_number 
+    step_info = [name, step, abs_path, pash, batch_id, image_id] 
+    insertStepRecord(db_path, step_info)
+
+
 
 # print(db_path)
 # def insertMultipleRecords(db_path, recordList):
