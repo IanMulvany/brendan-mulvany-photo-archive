@@ -27,8 +27,7 @@ config.read("config.ini")
 db_path = config["sqlite3"]["db_path"]
 extensions_string = config["image_related"]["image_file_extensions"]
 extensions_string_stripped = extensions_string.lstrip('"').rstrip('"')
-image_file_extensions = ["*." + x for x in extensions_string_stripped.split(",")]
-print(image_file_extensions)
+image_file_extensions = ["." + x for x in extensions_string_stripped.split(",")]
 
 
 # use argparse to get the path to the image files
@@ -40,22 +39,33 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "image_dir_path", type=str, help="path to the directory of scanned images"
 )
+# parser.add_argument('--step', action="step", default='scan', choices=['scan', 'crop', 'invert', 'edit'], help='pick processing step for image md ingetsion (default: %(default)s)') 
+parser.add_argument(
+    "-s", "--step", action="store", type=str, choices=['scan', 'crop', 'invert', 'edit'], help="image processing step"
+)
+
 args = parser.parse_args()
+process_step = args.step 
 image_dir_path = args.image_dir_path
+
 if path.isdir(image_dir_path) is False:
     print("error, no such directory exists: " + image_dir_path)
     sys.exit()
 
-
 # get path to image files in the image_dir_path directory
+step_dict = {"scan":"cap", "crop":"crop", "invert":"inv", "edit":"edit"} # we use the step input to refine the glob search pattern
 def get_image_paths(image_dir_path):
-    image_paths = []
+    image_paths = [] 
+    step_string = step_dict[process_step]
     for ext in image_file_extensions:
-        image_paths.extend(glob.glob(join(image_dir_path, ext)))
+        search_pattern = "*_" + step_string + ext 
+        print(search_pattern)
+        image_paths.extend(glob.glob(join(image_dir_path, search_pattern)))
     return image_paths
 
 
 image_paths = get_image_paths(image_dir_path)
+print(image_paths)
 
 
 # get the md for each image in image paths
@@ -65,7 +75,7 @@ for image_path in image_paths:
     image_name, image_date , image_absolute_path = get_image_md(image_path)
     pash = get_perceptual_hash(image_path)
     # set row to the order of items in the insert query below
-    row = [image_date, image_absolute_path, image_name, image_size, image_hash, str(near_hash)]
+    row = [image_date, image_absolute_path, image_name, str(pash)]
     images_md.append(row)
 
 # get info about the batch run.
@@ -105,7 +115,5 @@ for row in images_md:
 
 #     except sqlite3.Error as error:
 #         print("Failed to insert record into sqlite table", error)
-
-
-insertMultipleRecords(db_path, images_md)
+# insertMultipleRecords(db_path, images_md)
 print("done") 
