@@ -26,5 +26,11 @@ sqlite-utils create-table test_new_bma.db archival_steps \
     cropped_from text \
     inverted_from text \
     edited_from text \
-    --fk batch_id batch_info batch_number \
-    --fk image images name
+    batch_id integer \
+    image text
+
+sqlite-utils add-foreign-keys test_new_bma.db \
+    archival_steps batch_id batch_info batch_number \
+    archival_steps image images name
+
+sqlite-utils index-foreign-keys test_new_bma.db 
