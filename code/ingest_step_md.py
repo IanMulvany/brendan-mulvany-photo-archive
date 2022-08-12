@@ -17,7 +17,7 @@ from os.path import join
 import sqlite3 
 
 #
-from get_batch_info import get_batch_info
+from get_batch_yaml import get_batch_yaml
 from get_image_md import get_image_md
 from quick_hash import get_perceptual_hash 
 
@@ -79,22 +79,12 @@ for image_path in image_paths:
     images_md.append(row)
 
 # get info about the batch run.
-batch_number, batch_year, batch_note = get_batch_info()
+batch_number, batch_year, batch_note = get_batch_yaml(image_dir_path)
 
 for row in images_md:
     row.extend([batch_year, batch_number, batch_note]) # add batch info to row 
 
-
-# insert the following data into the Images table of the Sqlite database
-# capture_date
-# impage_path
-# image_name 
-# image_size
-# md5_hash 
-# near_hash (pash) 
-# batch_year 
-# batch_number 
-# batch_note 
+print(images_md)
 
 # print(db_path)
 # def insertMultipleRecords(db_path, recordList):
