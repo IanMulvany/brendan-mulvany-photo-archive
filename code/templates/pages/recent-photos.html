@@ -1,0 +1,10 @@
+this is a test page
+
+<div>
+    {% for photo in sql("select * from images") %}
+
+        we might have an image
+    <img src="/-/media/photo/{{ photo['name'] }}?w=20">
+
+    {% endfor %}
+</div>

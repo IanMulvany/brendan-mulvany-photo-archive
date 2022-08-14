@@ -1,0 +1,13 @@
+plugins:
+  datasette-media:
+    thumbnail:
+      sql: |-
+        select path as filepath, 200 as resize_height from images where uuid = :name 
+    large:
+      sql: |-
+        select path as filepath, 1024 as resize_height from images where uuid = :name
+    photo:
+        sql: |-
+          select content as content from images where name=:key 
+        enable_transforms:
+          true 

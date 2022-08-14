@@ -1,0 +1,9 @@
+random-photos.html
+
+<h1>Random photos</h1>
+
+<div>
+{% for photo in sql("with foo as (select * from images order by date desc limit 5000) select * from foo order by random() limit 20") %}
+    <img src="/-/media/photo/{{ photo['name'] }}">
+{% endfor %}
+</div>

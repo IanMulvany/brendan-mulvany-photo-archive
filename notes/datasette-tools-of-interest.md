@@ -38,6 +38,12 @@ Media / images / in sqlite / datasette /
 https://simonwillison.net/2020/Jul/30/fun-binary-data-and-sqlite/ 
 https://github.com/simonw/datasette-render-images 
 
+explaination in the dogsheep repo on how to configure the media plugin 
+to allow for displahyig images:
+https://datasette.io/plugins/datasette-media
+
+
+
 
 
 
