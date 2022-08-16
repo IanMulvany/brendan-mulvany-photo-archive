@@ -1,0 +1,7 @@
+<h1>Recent photos</h1>
+
+<div>
+{% for photo in sql("select * from images order by date desc limit 20") %}
+    <img src="/-/media/photo/{{ photo['name'] }}">
+{% endfor %}
+</div>
