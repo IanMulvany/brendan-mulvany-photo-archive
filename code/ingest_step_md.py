@@ -21,9 +21,13 @@ from get_batch_yaml import get_batch_yaml
 from get_image_md import get_image_md
 from quick_hash import get_perceptual_hash 
 
+
+abs_path = "/Users/devian/Library/Mobile Documents/com~apple~CloudDocs/Documents/code/brendan-mulvany-photo-archive/code/"
+
 # Get some config data about the location of the myslite db
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read(abs_path + "/config.ini")
+
 db_path = config["sqlite3"]["db_path"]
 extensions_string = config["image_related"]["image_file_extensions"]
 extensions_string_stripped = extensions_string.lstrip('"').rstrip('"')
