@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #inputBox {
+            width: 300px;
+            font-size: 24px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <input type="number" id="inputBox" placeholder="Type or speak a number...">
+        <button onclick="checkNumber()">Check Number</button>
+    </div>
+
+    <script>
+        // Predefined list of numbers
+        const predefinedNumbers = [1, 2, 3, 4, 5, 10, 20, 100];  // Modify this list as needed
+
+        function checkNumber() {
+            const inputVal = document.getElementById('inputBox').value;
+
+            if (predefinedNumbers.includes(Number(inputVal))) {
+                speak("The number is in the list.");
+            } else {
+                speak("The number is not in the list.");
+            }
+        }
+
+        function speak(message) {
+            const speech = new SpeechSynthesisUtterance();
+            speech.text = message;
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Speech recognition
+        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+
+            recognition.onresult = function(event) {
+                const spokenNumber = event.results[0][0].transcript;
+                document.getElementById('inputBox').value = spokenNumber;
+                checkNumber();
+            }
+
+            document.getElementById('inputBox').addEventListener('focus', function() {
+                recognition.start();
+            });
+        }
+    </script>
+
+</body>
+
+</html>
