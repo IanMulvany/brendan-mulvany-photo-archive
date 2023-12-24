@@ -1,0 +1,43 @@
+The scripts provided cover a range of functionalities. Here are descriptions of what each script does and how to run them.
+
+1. check_what_is_in_an_SQLite_database.py:
+- Descriptions: This script provides functions to interact with an SQLite database. It has functions to list columns in a database, check if a certain column exists, and manage (add, modify, delete) columns in the database.
+- How to run: You need to import the functions in this script into your Python program to use them.
+
+2. make_contact_sheet.py:
+- Descriptions: This script creates a contact sheet (image montage) from a group of images specified by a list of file names. It has functions to calculate the size of the output image, read in an image and resize it appropriately and insert each thumbnail image onto the output image.
+- How to run: Import and call the function `make_contact_sheet(fnames, grid_dim, photo_size, margins, padding)` providing it with a list of file names, the dimensions of the grid for the contact sheet, photo size, margins, and padding.
+
+3. create_image_db.py:
+- Descriptions: This script creates an SQLite database for storing info about images. It has a specific function `create_image_db(db_path)` to create tables in the database to save relevant image information such as image id, capture date, image path, image name, image size and image hash among others.
+- How to run:  Run `create_image_db(db_path)` providing the database path as a parameter.
+
+4. get_batch_info.py:
+- Descriptions: This script is used to input batch info about images through the command line. It includes functions to take user input and return this as batch number, year and note.
+- How to run: Run the script in your terminal and follow the prompts to input the relevant data.
+
+5. get_batch_yaml.py:
+- Descriptions: This script gets some metadata about the images from a YAML file, including batch year, batch number, and batch note.
+- How to run: Import and call the function `get_batch_yaml(path)` providing it with the path to the directory of the YAML file.
+
+6. get_image_md.py:
+- Descriptions: This script provides some functions to get metadata about an image such as the capture date, its name and the absolute path of the image.
+- How to run: Import and call the function `get_image_md(image_path)` providing the path to the image file as a parameter.
+
+7. add_new_column_to_db.py:
+- Descriptions: This script provides functionalities to manage columns in an SQLite database, including adding a new column, dropping a column and modifying column type.
+- How to run: You need to import the functions in this script into your Python program to use them.
+
+8. insert_dummy_data.py:
+- Descriptions: This script is used to insert dummy data into the SQLite database.
+- How to run: Run `insert_dummy_data(db_path)` providing the database path as a parameter.
+
+9. quick_hash.py:
+- Descriptions: This script provides functions to calculate the hash of the image. It can calculate an MD5 hash as well as a perceptual hash of an image.
+- How to run: Import and call the functions `get_md5_hash(image_path)` or `get_perceptual_hash(image_path)` providing the path to the image file as a parameter.
+
+10. write_batch_yaml.py:
+- Descriptions: This scripts writes a YAML file that embeds batch information including batch year, batch number, and batch note.
+- How to run: Import and call the function `write_batch_yaml(path, batch_year, batch_number, batch_note)` providing the path to the directory where the file should be stored and the batch information as parameters.
+
+Please note that these scripts needs to be wired up in your program according to the business needs and should be run in Python environment where all dependencies are installed and paths to resources (images, databases) are accessible.
