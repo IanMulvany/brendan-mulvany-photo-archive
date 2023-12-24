@@ -1,3 +1,28 @@
+
+## 2023-12-24 
+Retrobatch-2 is definitly the image processing engine that I should use for most of the image processing:
+https://flyingmeat.com/retrobatch/
+
+I did a quick test to convert files in 
+/Users/devian/Documents/code/brendan-mulvany-photo-archive/images/test_negatives
+
+to 
+/Users/devian/Documents/code/brendan-mulvany-photo-archive/images/test-retrobatch-write
+
+and it worked perfectly. 
+
+It can also support clasfficaiton, and intergartion with scripts.
+
+Scripting documentation
+https://flyingmeat.com/retrobatch/docs-2.0/shellscripts/
+
+Documentation for classificaiton:
+https://flyingmeat.com/retrobatch/docs-2.0/classification/
+Can be comgined with the Rules node, and can be used to filter out specific classifications, will need some time to work out what I want to do. 
+
+CoreML models from Apple are available here:
+https://developer.apple.com/machine-learning/models/ 
+
 ## 2023-06-19 
 
 https://photoswipe.com/getting-started/ could be useful for creating the online image library when I get around to doing that. 
