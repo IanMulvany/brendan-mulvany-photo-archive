@@ -21,7 +21,7 @@ Contains documentation, and notes for the proejct.
 
 # Working on the code 
 
-Code is written in pythin and the environment is managed through conda. 
+Code is written in python and the environment is managed through conda. 
 Use 
 
 ```bash
