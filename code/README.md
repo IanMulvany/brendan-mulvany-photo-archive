@@ -1,8 +1,62 @@
-1. The first file provides functions to interact with a SQLite database. These functions allow a user to list the columns in a specific table of the database and check if a specific column of a certain type exists in that table. It is particularly geared toward working with images.
+# Image Archiving Application
 
-2. The second file defines a function to create a contact sheet (or montage) of images. The function arranges a series of image thumbnails into a grid. The layout of the grid, size of the thumbnails, and margins can all be specified. The function calculates the dimensions of the resulting image based on these parameters and meticulously arranges and pastes the individual thumbnails into a new, blank image. It handles opening and resizing the individual images as necessary. After creating the contact sheet, the script uses this function to create a contact sheet from all JPG images in the current directory.
+This repository contains a collection of Python scripts designed for an image archiving application. The scripts handle various aspects of image processing, metadata extraction, and database management.
 
-3. The third file creates a SQLite database for storing image information such as an image's unique identifier, timestamp, file size, file name, hashed value, amount batch information, etc. It begins by naming and connecting to the database then continues to create two tables "Images" and "FieldDescriptions". These tables are designed to document crucial information about each image stored and the function used to fill the database with the necessary image data.
+## Key Components
+
+1. **Database Interaction (check_db_status.py)**
+   - Provides functions to interact with a SQLite database.
+   - Lists tables in the database.
+   - Shows columns in the 'Images' table.
+   - Counts records in the 'Images' table.
+   - Checks if specific columns exist in the table.
+
+   Example usage:
+   ```
+   python check_db_status.py --db path/to/your/database.db
+   ```
+   If no --db argument is provided, the script will use 'bm_image_archive.db' in the current directory.
+
+2. **Contact Sheet Creation (contact_sheet.py)**
+   - Creates a contact sheet (montage) of images.
+   - Arranges image thumbnails into a grid.
+   - Allows customization of grid layout, thumbnail size, and margins.
+
+3. **Database Creation (create_image_sqlite_db.py)**
+   - Creates a SQLite database for storing image information.
+   - Sets up tables for image metadata and field descriptions.
+
+4. **Metadata Extraction**
+   - Various scripts (e.g., get_image_md.py) extract metadata from images.
+   - Handles information like image name, date, path, and size.
+
+5. **Batch Information Management**
+   - Scripts for retrieving and storing batch information.
+   - Includes YAML file manipulation for batch data.
+
+6. **Image Processing**
+   - Scripts for image hashing (quick_hash.py).
+   - Image renaming and cropping functionalities.
+
+## Usage
+
+Each script can be run independently. Refer to individual script headers or use the --help flag for specific usage instructions.
+
+## Dependencies
+
+Ensure you have the required libraries installed. You can install them using:
+
+```
+pip install -r requirements.txt
+```
+
+## Contributing
+
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details.
 ~/D/c/b/code $ more *.py | llm -s "describe what each of these files does" -m gpt4
 The files described here all contribute to an archiving application for images, which extracts some metadata about scanned images (like image size, location, capture time, image hash, etc.) and stores them in an SQLite database for easy retrieval and manipulation. Here is a brief description of each file :
 
