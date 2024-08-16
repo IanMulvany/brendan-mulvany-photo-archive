@@ -81,12 +81,10 @@ def main():
     test_image_path = "../images/test_images/JPEG image 6.jpeg"
     image_date = get_image_date(test_image_path)
     image_name = get_image_name(test_image_path)
-    image_size = get_image_size(test_image_path)
     image_absolute_path = get_absolute_path(test_image_path)
 
     print(image_date)
     print(image_name)
-    print(image_size)
     print(image_absolute_path)
 
 
