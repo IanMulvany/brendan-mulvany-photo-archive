@@ -18,9 +18,17 @@ This repository contains a collection of Python scripts designed for an image ar
    If no --db argument is provided, the script will use 'bm_image_archive.db' in the current directory.
 
 2. **Contact Sheet Creation (contact_sheet.py)**
-   - Creates a contact sheet (montage) of images.
-   - Arranges image thumbnails into a grid.
-   - Allows customization of grid layout, thumbnail size, and margins.
+   - Creates a contact sheet (montage) of images from a specified directory.
+   - Arranges image thumbnails into a customizable grid layout.
+   - Allows specification of columns, rows, thumbnail size, margins, and padding.
+   - Automatically generates an output filename based on the directory name and current date/time.
+   - Saves the contact sheet as a PNG file in the same directory as the input images.
+
+   Example usage:
+   ```
+   python contact_sheet.py /path/to/image/directory --cols 5 --rows 4
+   ```
+   This will create a contact sheet with 5 columns and 4 rows using images from the specified directory.
 
 3. **Database Creation (create_image_sqlite_db.py)**
    - Creates a SQLite database for storing image information.
