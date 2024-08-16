@@ -1,6 +1,8 @@
 # taken from https://code.activestate.com/recipes/578267-use-pil-to-make-a-contact-sheet-montage-of-images/
 
-import glob
+import argparse
+from pathlib import Path
+from datetime import datetime
 from PIL import Image
 
 def make_contact_sheet(fnames, grid_dim, photo_size, margins, padding):
@@ -68,24 +70,41 @@ def make_contact_sheet(fnames, grid_dim, photo_size, margins, padding):
     return inew
 
 
-ncols, nrows = 4, 4
+def main():
+    parser = argparse.ArgumentParser(description="Create a contact sheet from images in a directory.")
+    parser.add_argument("directory", type=str, help="Directory containing the images")
+    parser.add_argument("--cols", type=int, default=4, help="Number of columns in the contact sheet")
+    parser.add_argument("--rows", type=int, default=4, help="Number of rows in the contact sheet")
+    args = parser.parse_args()
 
-files = glob.glob("*.JPG")
+    directory = Path(args.directory)
+    if not directory.is_dir():
+        raise ValueError(f"{directory} is not a valid directory")
 
-# Don't bother reading in files we aren't going to use
-if len(files) > ncols * nrows:
-    files = files[: ncols * nrows]
+    ncols, nrows = args.cols, args.rows
+    files = list(directory.glob("*.JPG")) + list(directory.glob("*.jpg"))
 
-# These are all in terms of pixels:
-photow, photoh = 200, 150
-photo = (photow, photoh)
+    # Don't bother reading in files we aren't going to use
+    if len(files) > ncols * nrows:
+        files = files[: ncols * nrows]
 
-margins = [5, 5, 5, 5]
+    # These are all in terms of pixels:
+    photow, photoh = 200, 150
+    photo = (photow, photoh)
 
-padding = 2
+    margins = [5, 5, 5, 5]
+    padding = 2
+    grid_dim = (ncols, nrows)
 
-grid_dim = (ncols, nrows)
+    inew = make_contact_sheet(files, grid_dim, photo, margins, padding)
+    
+    # Generate output filename based on directory name and current date/time
+    output_filename = f"contact_sheet_{directory.name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    output_path = directory / output_filename
+    
+    inew.save(output_path)
+    print(f"Contact sheet saved as: {output_path}")
+    inew.show()
 
-inew = make_contact_sheet(files, grid_dim, photo, margins, padding)
-inew.save("bs.png")
-inew.show()
+if __name__ == "__main__":
+    main()
