@@ -1,186 +1,91 @@
-#!/Users/devian/opt/anaconda3/envs/bm_archive/bin/python
+#!/usr/bin/env python3
 """
-Given a path to a directory of images:
-
-- get core metadata about these images, and insert that data into Mysqllite database. 
-
-We assume that there is one directory per scanning event, and each scan is for one 
-batch of images from the Brendan Mulvany archive. 
+This script processes a directory of images, extracts metadata, and inserts the data into an SQLite database.
+It handles one directory per scanning event, with each scan representing a batch of images from the Brendan Mulvany archive.
 """
 
 import configparser
 import argparse
 import sys
-from os import path
-import glob as glob
-from os.path import join
-import sqlite3 
+import os
+import glob
+import sqlite3
+from datetime import datetime
 
-#
 from get_batch_yaml import get_batch_yaml
 from get_image_md import get_image_md
-from quick_hash import get_perceptual_hash 
+from quick_hash import get_perceptual_hash
 
+def load_config(config_path):
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    return config
 
-abs_path = "/Users/devian/Library/Mobile Documents/com~apple~CloudDocs/Documents/code/brendan-mulvany-photo-archive/code/"
-
-# Get some config data about the location of the myslite db
-config = configparser.ConfigParser()
-config.read(abs_path + "/config.ini")
-
-db_path = config["sqlite3"]["db_path"]
-extensions_string = config["image_related"]["image_file_extensions"]
-extensions_string_stripped = extensions_string.lstrip('"').rstrip('"')
-image_file_extensions = ["." + x for x in extensions_string_stripped.split(",")]
-
-
-# use argparse to get the path to the image files
-parser = argparse.ArgumentParser(
-    prog="scanned_images_md_to_sqlite",
-    description="Get some metadata about the images in a directory",
-    epilog="good scanning!!",
-)
-parser.add_argument(
-    "image_dir_path", type=str, help="path to the directory of scanned images"
-)
-# parser.add_argument('--step', action="step", default='scan', choices=['scan', 'crop', 'invert', 'edit'], help='pick processing step for image md ingetsion (default: %(default)s)') 
-parser.add_argument(
-    "-s", "--step", action="store", type=str, choices=['scan', 'crop', 'invert', 'edit'], help="image processing step"
-)
-
-args = parser.parse_args()
-process_step = args.step 
-image_dir_path = args.image_dir_path
-
-if path.isdir(image_dir_path) is False:
-    print("error, no such directory exists: " + image_dir_path)
-    sys.exit()
-
-# get path to image files in the image_dir_path directory
-step_dict = {"scan":"cap", "crop":"crop", "invert":"inv", "edit":"edit"} # we use the step input to refine the glob search pattern
-def get_image_paths(image_dir_path):
-    image_paths = [] 
+def get_image_paths(image_dir_path, process_step, image_file_extensions):
+    step_dict = {"scan": "cap", "crop": "crop", "invert": "inv", "edit": "edit"}
     step_string = step_dict[process_step]
+    image_paths = []
     for ext in image_file_extensions:
-        search_pattern = "*_" + step_string + ext 
-        print(search_pattern)
-        image_paths.extend(glob.glob(join(image_dir_path, search_pattern)))
+        search_pattern = f"*_{step_string}{ext}"
+        image_paths.extend(glob.glob(os.path.join(image_dir_path, search_pattern)))
     return image_paths
 
+def insert_batch_record(conn, batch_info):
+    cur = conn.cursor()
+    sqlite_insert_query = """INSERT INTO batch_info 
+        (year, name, batch_number)
+        VALUES (?, ?, ?)"""
+    cur.execute(sqlite_insert_query, batch_info)
+    conn.commit()
 
-image_paths = get_image_paths(image_dir_path)
-print(image_paths)
+def insert_step_record(conn, step_info):
+    cur = conn.cursor()
+    sqlite_insert_query = """INSERT INTO archival_steps 
+        (name, step, abs_path, pash, batch_id, image, ingest_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?)"""
+    cur.execute(sqlite_insert_query, step_info)
+    conn.commit()
 
+def main():
+    parser = argparse.ArgumentParser(
+        description="Process images and insert metadata into SQLite database",
+        epilog="Happy archiving!"
+    )
+    parser.add_argument("image_dir_path", type=str, help="Path to the directory of scanned images")
+    parser.add_argument("-s", "--step", required=True, choices=['scan', 'crop', 'invert', 'edit'], help="Image processing step")
+    parser.add_argument("--config", default="config.ini", help="Path to the configuration file")
+    args = parser.parse_args()
 
-# get the md for each image in image paths
-#TODO: configure db filed names from ini file rather than in code
-images_md = []
-for image_path in image_paths:
-    image_name, image_date , image_absolute_path = get_image_md(image_path)
-    pash = get_perceptual_hash(image_path)
-    # set row to the order of items in the insert query below
-    row = [image_date, image_absolute_path, image_name, str(pash)]
-    images_md.append(row)
+    if not os.path.isdir(args.image_dir_path):
+        print(f"Error: No such directory exists: {args.image_dir_path}")
+        sys.exit(1)
 
-# get info about the batch run.
-batch_year, batch_number, batch_note = get_batch_yaml(image_dir_path)
+    config = load_config(args.config)
+    db_path = config["sqlite3"]["db_path"]
+    image_file_extensions = [f".{ext.strip()}" for ext in config["image_related"]["image_file_extensions"].split(",")]
 
+    image_paths = get_image_paths(args.image_dir_path, args.step, image_file_extensions)
+    if not image_paths:
+        print(f"No images found in {args.image_dir_path} for step {args.step}")
+        sys.exit(1)
 
-for row in images_md:
-    row.extend([batch_year, batch_number, batch_note]) # add batch info to row 
-print(images_md)
-
-
-print(db_path)
-def insertBatchRecord(db_path, batch_info):
+    batch_year, batch_number, batch_note = get_batch_yaml(args.image_dir_path)
+    
     try:
         conn = sqlite3.connect(db_path)
-        cur = conn.cursor()
-        
-        print("Connected to SQLite")
-        print(batch_info)
+        insert_batch_record(conn, [batch_year, batch_note, batch_number])
 
-        sqlite_insert_query = """INSERT INTO batch_info 
-            (year, name, batch_number)
-            VALUES (?, ?, ?)"""
-            
-        # cur.execute("INSERT INTO Images VALUES (9, '2019-01-01', 'image_path', 'image_name', 100, 'image_hash', 'near_hash', 'bm_batch_year', 1, 'bm_batch_note')")
-        cur.execute(sqlite_insert_query, batch_info) 
-        conn.commit()
+        for image_path in image_paths:
+            image_name, image_date, image_absolute_path = get_image_md(image_path)
+            pash = get_perceptual_hash(image_path)
+            step_info = [image_name, args.step, image_absolute_path, str(pash), batch_number, image_name, datetime.now().isoformat()]
+            insert_step_record(conn, step_info)
+
         conn.close()
-
+        print(f"Successfully processed {len(image_paths)} images and inserted metadata into the database.")
     except sqlite3.Error as error:
-        print("Failed to insert record into sqlite table", error)
+        print(f"An error occurred while working with the SQLite database: {error}")
+        sys.exit(1)
 
-
-
-
-    # step text \
-    # step_date text \
-    # ingest_date text \
-    # abs_path text \
-    # rel_path text \
-    # pash text \
-    # cropped_from text \
-    # inverted_from text \
-    # edited_from text \
-    # --fk batch_id batch_info batch_number \
-    # --fk image images name
-
-
-def insertStepRecord(db_path, step_info):
-    try:
-        conn = sqlite3.connect(db_path)
-        cur = conn.cursor()
-        
-        print("Connected to SQLite")
-        print(step_info)
-
-        sqlite_insert_query = """INSERT INTO archival_steps 
-            (name, step, abs_path, pash, batch_id, image)
-            VALUES (?, ?, ?, ?, ?, ?)"""
-            
-        cur.execute(sqlite_insert_query, step_info) 
-        conn.commit()
-        conn.close()
-
-    except sqlite3.Error as error:
-        print("Failed to insert record into sqlite table", error)
-
-# batch_info = {"year":batch_year, "name":batch_note, "batch_number":batch_number}
-batch_info = [batch_year, batch_note, batch_number]
-insertBatchRecord(db_path, batch_info)
-
-for row in images_md:
-    name = row[2]
-    step = process_step 
-    abs_path = row[1]
-    pash = row[3] 
-    image_id = name 
-    batch_id = batch_number 
-    step_info = [name, step, abs_path, pash, batch_id, image_id] 
-    insertStepRecord(db_path, step_info)
-
-
-
-# print(db_path)
-# def insertMultipleRecords(db_path, recordList):
-#     try:
-#         conn = sqlite3.connect(db_path)
-#         cur = conn.cursor()
-        
-#         print("Connected to SQLite")
-
-#         sqlite_insert_query = """INSERT INTO Images 
-#             (capture_date, image_path, image_name, image_size, image_hash, near_hash, bm_batch_year, bm_batch_number, bm_batch_note) 
-#             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-            
-#         # cur.execute("INSERT INTO Images VALUES (9, '2019-01-01', 'image_path', 'image_name', 100, 'image_hash', 'near_hash', 'bm_batch_year', 1, 'bm_batch_note')")
-#         cur.executemany(sqlite_insert_query, recordList) 
-#         conn.commit()
-#         conn.close()
-
-#     except sqlite3.Error as error:
-#         print("Failed to insert record into sqlite table", error)
-# insertMultipleRecords(db_path, images_md)
-print("done") 
+if __name__ == "__main__":
+    main()
