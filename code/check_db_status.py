@@ -7,18 +7,31 @@ def parse_arguments():
     parser.add_argument("--db", default="bm_image_archive.db", help="Path to the SQLite database file")
     return parser.parse_args()
 
-def list_columns(path_to_database):
-    print(f"Listing columns for database: {path_to_database}")
+def list_database_info(path_to_database):
+    print(f"Analyzing database: {path_to_database}")
     conn = sqlite3.connect(path_to_database)
     cur = conn.cursor()
+
+    # List all tables
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cur.fetchall()
+    print("\nTables in the database:")
+    for table in tables:
+        print(f"  - {table[0]}")
+
+    # List columns in the Images table
     cur.execute("PRAGMA table_info(Images)")
     columns = cur.fetchall()
-    conn.close()
-    
-    print("Columns in the 'Images' table:")
+    print("\nColumns in the 'Images' table:")
     for col in columns:
         print(f"  - {col[1]} ({col[2]})")
-    
+
+    # Count records in the Images table
+    cur.execute("SELECT COUNT(*) FROM Images")
+    count = cur.fetchone()[0]
+    print(f"\nNumber of records in the Images table: {count}")
+
+    conn.close()
     return columns
 
 def check_if_exists(column_name, type, db_path):
@@ -43,8 +56,7 @@ def main():
         return
 
     try:
-        cols = list_columns(db_path)
-        print(f"\nTotal number of columns: {len(cols)}")
+        list_database_info(db_path)
     except sqlite3.Error as e:
         print(f"An error occurred while accessing the database: {e}")
 
