@@ -1,4 +1,9 @@
 
+## 2024-08-17
+Having some success using aider - the llm powered support tool for coding. 
+Also noticed that there is no good documentation about my overall thinking and approach about what I am aiming to do. 
+
+
 ## 2023-12-24 
 Retrobatch-2 is definitly the image processing engine that I should use for most of the image processing:
 https://flyingmeat.com/retrobatch/
